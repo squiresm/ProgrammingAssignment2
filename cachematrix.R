@@ -1,6 +1,6 @@
 # rm(list = ls(all = TRUE))
 
-# Creates an object that stores (caches) a matrix and its inverse within 
+# Creates an object that caches a matrix and its inverse within 
 # the function environment
 #
 # Args:
@@ -9,6 +9,9 @@
 #      1. numeric
 #      2. square in structure (n-by-n)
 #      3. A determinant that is not zero (not a singular matrix)
+# A rudimentary check is conducted on the parameter matrix to ensure
+# that it is a numeric, square matrix. This test does not identify
+# a matrix that is singular and hence not invertible.
 #
 # Returns:
 #   An object that contains two data objects
@@ -16,6 +19,10 @@
 #   2. The inverse matrix of x
 #
 makeCacheMatrix <- function(x = matrix()) {
+    if(!is.numeric(x)) {
+            if(is.character(x)) {stop("This function only accepts a numeric, square matrix!")}
+    }
+    if(nrow(x) != ncol(x)) {stop("This function only accepts a numeric, square matrix!")}
     mi <- NULL
     set <- function(y) {
         x <<- y
@@ -55,4 +62,33 @@ cacheSolve <- function(x, ...) {
     mi
 }
 
-mt <- matrix(floor(runif(3, min=0, max=101)))
+# Test Results-------------------------------------------
+# set.seed(77)
+# mx <- matrix(floor(runif(16, min=1, max=10)), nrow = 4)
+# cacheSolve(mcm)
+#            [,1]       [,2]       [,3]       [,4]
+# [1,] -0.16190476  0.2571429  0.1428571 -0.1619048
+# [2,]  0.24761905  0.3714286  0.4285714 -0.7523810
+# [3,]  0.00952381 -0.4857143 -0.7142857  1.0095238
+# [4,] -0.15238095 -0.2285714  0.4285714 -0.1523810
+#> cacheSolve(mcm)
+#getting cached data
+#            [,1]       [,2]       [,3]       [,4]
+# [1,] -0.16190476  0.2571429  0.1428571 -0.1619048
+# [2,]  0.24761905  0.3714286  0.4285714 -0.7523810
+# [3,]  0.00952381 -0.4857143 -0.7142857  1.0095238
+# [4,] -0.15238095 -0.2285714  0.4285714 -0.1523810
+#
+# Test for non-numeric
+# mchar <- matrix(rep(c("a", "b", "c", "d"),4), nrow = 4) 
+# mcc <- makeCacheMatrix(mchar)
+# Error in makeCacheMatrix(mchar) : 
+#    This function only accepts a numeric, square matrix!
+#
+# Test for a numeric, non-square matrix
+# set.seed(77)
+# mx <- matrix(floor(runif(16, min=1, max=10)), nrow = 2)
+# mcm <- makeCacheMatrix(mx)
+# Error in makeCacheMatrix(mx) : 
+# This function only accepts a numeric, square matrix!
+# -------------------------------------------------------
