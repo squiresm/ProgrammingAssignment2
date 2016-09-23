@@ -12,6 +12,8 @@ assignment assumption
 
 That said, I have implemented some rudimentary checks to ensure that the passed matrix
 has the following characteristics:
+
 1. It is a numeric matrix and
 2. It has a square structure (non-square matrices not offering inversion)
 
+Additionally, I have provided some test data results.
